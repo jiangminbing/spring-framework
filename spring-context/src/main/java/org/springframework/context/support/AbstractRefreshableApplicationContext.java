@@ -145,7 +145,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			// 定制 BeanFactory 设置相关属性
 			customizeBeanFactory(beanFactory);
 			// 加载 BeanDefinition 们
-			loadBeanDefinitions(beanFactory);
+			loadBeanDefinitions(beanFactory);//模版方法 由于子类AbstractXmlAppliactioncontext 实现
 			// 设置 Context 的 BeanFactory
 			synchronized (this.beanFactoryMonitor) {
 				this.beanFactory = beanFactory;

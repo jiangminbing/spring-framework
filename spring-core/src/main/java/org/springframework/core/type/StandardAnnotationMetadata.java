@@ -76,7 +76,7 @@ public class StandardAnnotationMetadata extends StandardClassMetadata implements
 	public Set<String> getAnnotationTypes() {
 		Set<String> types = new LinkedHashSet<>();
 		for (Annotation ann : this.annotations) {
-			types.add(ann.annotationType().getName());
+			types.add(ann.annotationType().getName());//放入注解类
 		}
 		return types;
 	}

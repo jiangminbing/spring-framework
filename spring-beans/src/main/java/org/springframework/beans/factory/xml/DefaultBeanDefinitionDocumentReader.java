@@ -127,7 +127,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// then ultimately reset this.delegate back to its original (parent) reference.
 		// this behavior emulates a stack of delegates without actually necessitating one.
         // 记录老的 BeanDefinitionParserDelegate 对象
-		BeanDefinitionParserDelegate parent = this.delegate;
+		BeanDefinitionParserDelegate parent = this.delegate;//实际完成解析的工作
 		// 创建 BeanDefinitionParserDelegate 对象，并进行设置到 delegate
 		this.delegate = createDelegate(getReaderContext(), root, parent);
         //检查 <beans /> 根标签的命名空间是否为空，或者是 http://www.springframework.org/schema/beans
@@ -205,7 +205,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 			importBeanDefinitionResource(ele);
 		} else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) { // alias
 			processAliasRegistration(ele);
-		} else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) { // bean
+		} else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) { // bean//xml文档节点为bean的时候
 			processBeanDefinition(ele, delegate);
 		} else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) { // beans
 			// recurse
