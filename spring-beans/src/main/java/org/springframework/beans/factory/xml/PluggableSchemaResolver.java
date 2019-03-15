@@ -123,7 +123,7 @@ public class PluggableSchemaResolver implements EntityResolver {
                     // 创建 InputSource 对象，并设置 publicId、systemId 属性
 					InputSource source = new InputSource(resource.getInputStream());
 					source.setPublicId(publicId);
-					source.setSystemId(systemId);
+					source.setSystemId(systemId);//
 					if (logger.isTraceEnabled()) {
 						logger.trace("Found XML schema [" + systemId + "] in classpath: " + resourceLocation);
 					}

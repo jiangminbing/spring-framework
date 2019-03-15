@@ -137,7 +137,8 @@ public class DefaultDocumentLoader implements DocumentLoader {
 			throws ParserConfigurationException {
 	    // 创建 DocumentBuilder 对象
 		DocumentBuilder docBuilder = factory.newDocumentBuilder();
-		// 设置 EntityResolver 属性
+		// 设置 EntityResolver 属性 这里有两种解析方式 一种是BeansDtdResolver 另外一种是PluggableSchemaResolver
+		//这两种都实现了EntityResolver这个接口，在xml解析的过程中回去执行resolveEntity 其实现的接口
 		if (entityResolver != null) {
 			docBuilder.setEntityResolver(entityResolver);
 		}

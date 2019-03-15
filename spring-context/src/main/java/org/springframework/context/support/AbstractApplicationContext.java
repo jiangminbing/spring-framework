@@ -486,7 +486,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
-            // 初始化 BeanFactory ，并进行 XML 文件读取（//创建工厂 将xml委托给XmlBeanDefintionReader ，关键方法完成xml文件的解析和对象映射）
+            // 初始化 BeanFactory ，并进行 XML 文件读取 在使用注解的启动的时候避开了这个内容
+			// 创建工厂 将xml委托给XmlBeanDefintionReader ，关键方法完成xml文件的解析和对象映射
+			// 这里返回的是 DefaultListableBeanFactory
+			// xml模式 AbstractRefreshableApplicationContext 中的方法refreshBeanFactory初始化了DefaultListableBeanFactory
+			// 注解模式 GenericApplicationContext 中的构造函数已经new DefaultListableBeanFactory(）
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
@@ -497,6 +501,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
                 // 子类覆盖该方法，做 BeanFactory 的额外的处理
+				// 定义一个抽象接口 使用spring的用户可以继承实现，处理的动作是在BeanFactory初始化后
 				postProcessBeanFactory(beanFactory);
 				// Invoke factory processors registered as beans in the context.
                 // 激活各种 BeanFactory 处理器，例如 BeanFactoryPostProcessor
@@ -605,8 +610,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see #refreshBeanFactory()
 	 * @see #getBeanFactory()
 	 */
-	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
-	    // 刷新( 重建 ) BeanFactory
+	protected ConfigurableListableBeanFactory  obtainFreshBeanFactory() {
+	    // 刷新( 重建 ) BeanFactory 注解刷新的方法是交给 GenericApplicationContext  XML配置刷新交给进行处理AbstractRefreshableApplicationContext
 		refreshBeanFactory();
 		// 获得 BeanFactory
 		return getBeanFactory();

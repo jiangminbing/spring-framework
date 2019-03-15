@@ -53,7 +53,7 @@ final class PostProcessorRegistrationDelegate {
         // 已经执行的 BeanDefinitionRegistryPostProcessor 的集合
 		Set<String> processedBeans = new HashSet<>();
 
-		// BeanDefinitionRegistry 类型
+		// BeanDefinitionRegistry 类型 beanFactory是DefalutListableBeanFactory
 		if (beanFactory instanceof BeanDefinitionRegistry) {
 		    // 转化为 BeanDefinitionRegistry 对象
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
@@ -83,7 +83,7 @@ final class PostProcessorRegistrationDelegate {
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
-            // 第一步，获得配置的，且实现 PriorityOrdered 接口的 BeanDefinitionRegistryPostProcessor 数组
+            // 第一且实现 PriorityOrder步，获得配置的，ed 接口的 BeanDefinitionRegistryPostProcessor 数组
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
@@ -351,6 +351,7 @@ final class PostProcessorRegistrationDelegate {
 	private static void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory, List<BeanPostProcessor> postProcessors) {
 	    // 遍历 BeanPostProcessor 数组，注册
 		for (BeanPostProcessor postProcessor : postProcessors) {
+			//AbstractBeanFactory 中提供了默认的实现
 			beanFactory.addBeanPostProcessor(postProcessor);
 		}
 	}

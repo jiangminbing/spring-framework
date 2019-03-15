@@ -46,7 +46,10 @@ import org.springframework.util.Assert;
  * @see AnnotationConfigApplicationContext#register
  */
 public class AnnotatedBeanDefinitionReader {
-
+	/**
+	 * 注解进来的时候AnnotationConfigAppicationContext
+	 * 它继承了DefaultListBeanFactoy 所以实际注解的工作由DefaulfListableBeanFactory完成
+	 */
 	private final BeanDefinitionRegistry registry;
 
 	private BeanNameGenerator beanNameGenerator = new AnnotationBeanNameGenerator();
@@ -213,8 +216,11 @@ public class AnnotatedBeanDefinitionReader {
 	 */
 	<T> void doRegisterBean(Class<T> annotatedClass, @Nullable Supplier<T> instanceSupplier, @Nullable String name,
 			@Nullable Class<? extends Annotation>[] qualifiers, BeanDefinitionCustomizer... definitionCustomizers) {
-
+		//委派给AnnotatedGenericBeanDefinition 进行处理
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(annotatedClass);
+		//abd.getMetadata 返回的是StandardAnnotationMetadata
+		// 没有Condition注解 直接执行后续代码内容，有Condition注解根据条件内容判断是否执行后续代码
+		//只要有一个条件返回为false 后续的解析将不进行
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
 		}
