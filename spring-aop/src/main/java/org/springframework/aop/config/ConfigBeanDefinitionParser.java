@@ -503,11 +503,13 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	/**
 	 * Creates a {@link BeanDefinition} for the {@link AspectJExpressionPointcut} class using
 	 * the supplied pointcut expression.
+	 * 最终将定义的切点生成RootBeanDefinition 注册到容器中
 	 */
 	protected AbstractBeanDefinition createPointcutDefinition(String expression) {
 		RootBeanDefinition beanDefinition = new RootBeanDefinition(AspectJExpressionPointcut.class);
 		beanDefinition.setScope(BeanDefinition.SCOPE_PROTOTYPE);
 		beanDefinition.setSynthetic(true);
+		//表达式定义
 		beanDefinition.getPropertyValues().add(EXPRESSION, expression);
 		return beanDefinition;
 	}

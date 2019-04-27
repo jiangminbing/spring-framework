@@ -84,6 +84,8 @@ final class PostProcessorRegistrationDelegate {
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
             // 第一且实现 PriorityOrder步，获得配置的，ed 接口的 BeanDefinitionRegistryPostProcessor 数组
+			// 注解类获取注册通过AnnotationConfigUtils 中默认注册的对象其中实现BeanDefinitaionRegistryPostProcessor  其中有ConfigurationClassPostProcessor
+			//通过这个步骤让ConfigurationClassPostProcessor 执行postProcessBeanFactory 方法，执行解析@Configuration 注解的类，并注解到容器中
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
@@ -103,6 +105,7 @@ final class PostProcessorRegistrationDelegate {
 
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.
             // 第二步，获得配置的，且实现 Ordered 接口的 BeanDefinitionRegistryPostProcessor 数组
+			// 再重新获取一遍 看下有没有用户自定义实现BeanDefinitionRegistryPostProcessor，按照顺序进行执行
             postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
 				if (!processedBeans.contains(ppName) && beanFactory.isTypeMatch(ppName, Ordered.class)) {
@@ -155,6 +158,7 @@ final class PostProcessorRegistrationDelegate {
 
 		// Do not initialize FactoryBeans here: We need to leave all regular beans
 		// uninitialized to let the bean factory post-processors apply to them!
+		// 获取实现BeanFactoryPostProcessor的类 按照队列进行执行
 		String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanFactoryPostProcessor.class, true, false);
 
 		// Separate between BeanFactoryPostProcessors that implement PriorityOrdered,
@@ -221,7 +225,7 @@ final class PostProcessorRegistrationDelegate {
 			ConfigurableListableBeanFactory beanFactory, AbstractApplicationContext applicationContext) {
 
         // 获取所有的 BeanPostProcessor 的 beanName
-        // 这些 beanName 都已经全部加载到容器中去，但是没有实例化
+        // 这些 beanName 都已经全部加载到容器中去，但是没有实例化 在获取的时候进行实例化，这时候在bean被实例化的时候会执行前置和后置的方法
 		String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false);
 
 		// Register BeanPostProcessorChecker that logs an info message when
@@ -330,6 +334,7 @@ final class PostProcessorRegistrationDelegate {
 			Collection<? extends BeanDefinitionRegistryPostProcessor> postProcessors, BeanDefinitionRegistry registry) {
 
 		for (BeanDefinitionRegistryPostProcessor postProcessor : postProcessors) {
+			//执行postProcessBeanDefinitionRegistry 方法
 			postProcessor.postProcessBeanDefinitionRegistry(registry);
 		}
 	}
@@ -341,6 +346,7 @@ final class PostProcessorRegistrationDelegate {
 			Collection<? extends BeanFactoryPostProcessor> postProcessors, ConfigurableListableBeanFactory beanFactory) {
 
 		for (BeanFactoryPostProcessor postProcessor : postProcessors) {
+			//执行容器级的方法
 			postProcessor.postProcessBeanFactory(beanFactory);
 		}
 	}

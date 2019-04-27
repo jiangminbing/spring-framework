@@ -111,7 +111,7 @@ abstract class ConfigurationClassUtils {
 				return false;
 			}
 		}
-
+		//校验是否是@Configuration
 		if (isFullConfigurationCandidate(metadata)) {
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}

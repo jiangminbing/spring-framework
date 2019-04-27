@@ -493,6 +493,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @see #instantiateBean
 	 * @see #instantiateUsingFactoryMethod
 	 * @see #autowireConstructor
+	 *
 	 */
 	protected Object doCreateBean(final String beanName, final RootBeanDefinition mbd, final @Nullable Object[] args)
 			throws BeanCreationException {
@@ -555,7 +556,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             // 对 bean 进行填充，将各个属性值注入，其中，可能存在依赖于其他 bean 的属性
             // 则会递归初始依赖 bean
 			populateBean(beanName, mbd, instanceWrapper);
-            // 调用初始化方法
+            // 调用初始化方法 进行初始化 各个属性的设置
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		} catch (Throwable ex) {
 			if (ex instanceof BeanCreationException && beanName.equals(((BeanCreationException) ex).getBeanName())) {
@@ -1264,6 +1265,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 						getAccessControlContext());
 			} else {
                 // 获得 InstantiationStrategy 对象，并使用它，创建 Bean 对象
+				//cglib 代理完成反射生成
                 beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, parent);
 			}
             // 封装 BeanWrapperImpl  并完成初始化

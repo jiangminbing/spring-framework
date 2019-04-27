@@ -190,6 +190,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 						parseDefaultElement(ele, delegate);
                     // 如果该节点非默认命名空间，执行自定义解析
 					} else {
+						//解析非默认命名空间 可能是aop 标签或者 事务标签
 						delegate.parseCustomElement(ele);
 					}
 				}

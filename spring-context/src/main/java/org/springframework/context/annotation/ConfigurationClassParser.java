@@ -160,7 +160,10 @@ class ConfigurationClassParser {
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, resourceLoader);
 	}
 
-
+	/**
+	 * 解析注解@Configuration
+	 * @param configCandidates
+	 */
 	public void parse(Set<BeanDefinitionHolder> configCandidates) {
 		this.deferredImportSelectors = new LinkedList<>();
 
@@ -185,7 +188,7 @@ class ConfigurationClassParser {
 						"Failed to parse configuration class [" + bd.getBeanClassName() + "]", ex);
 			}
 		}
-
+        //执行引入类中实现 实现ImportSelector接口的方法
 		processDeferredImportSelectors();
 	}
 
@@ -261,13 +264,15 @@ class ConfigurationClassParser {
 	@Nullable
 	protected final SourceClass doProcessConfigurationClass(ConfigurationClass configClass, SourceClass sourceClass)
 			throws IOException {
-
+		//@Configurate 注解是component的衍生所以能进入
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
+			//处理配置类中包含的内部类
 			processMemberClasses(configClass, sourceClass);
 		}
 
 		// Process any @PropertySource annotations
+		//处理引入配置文件 从这里开始!!
 		for (AnnotationAttributes propertySource : AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), PropertySources.class,
 				org.springframework.context.annotation.PropertySource.class)) {
@@ -343,8 +348,10 @@ class ConfigurationClassParser {
 
 	/**
 	 * Register member (nested) classes that happen to be configuration classes themselves.
+	 * 处理成员内部类
 	 */
 	private void processMemberClasses(ConfigurationClass configClass, SourceClass sourceClass) throws IOException {
+		//获取该配置类中的成员内部类
 		Collection<SourceClass> memberClasses = sourceClass.getMemberClasses();
 		if (!memberClasses.isEmpty()) {
 			List<SourceClass> candidates = new ArrayList<>(memberClasses.size());
@@ -354,9 +361,12 @@ class ConfigurationClassParser {
 					candidates.add(memberClass);
 				}
 			}
+			//进行排序
 			OrderComparator.sort(candidates);
 			for (SourceClass candidate : candidates) {
+				//判断内部类直接是否相互映入@Import
 				if (this.importStack.contains(configClass)) {
+					//相互引入抛出异常，循环引用重复加载异常
 					this.problemReporter.error(new CircularImportProblem(configClass, this.importStack));
 				}
 				else {
@@ -543,6 +553,9 @@ class ConfigurationClassParser {
 		}
 	}
 
+	/**
+	 * 执行@ImportSelectors类中的方法
+	 */
 	private void processDeferredImportSelectors() {
 		List<DeferredImportSelectorHolder> deferredImports = this.deferredImportSelectors;
 		this.deferredImportSelectors = null;
@@ -591,6 +604,10 @@ class ConfigurationClassParser {
 		return group;
 	}
 
+	/**
+	 * 执行import和register中的方法
+	 * */
+
 	private void processImports(ConfigurationClass configClass, SourceClass currentSourceClass,
 			Collection<SourceClass> importCandidates, boolean checkForCircularImports) {
 
@@ -612,12 +629,14 @@ class ConfigurationClassParser {
 						ParserStrategyUtils.invokeAwareMethods(
 								selector, this.environment, this.resourceLoader, this.registry);
 						if (this.deferredImportSelectors != null && selector instanceof DeferredImportSelector) {
+							//添加到集合中
 							this.deferredImportSelectors.add(
 									new DeferredImportSelectorHolder(configClass, (DeferredImportSelector) selector));
 						}
 						else {
 							String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata());
 							Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames);
+							//递归解析@import
 							processImports(configClass, currentSourceClass, importSourceClasses, false);
 						}
 					}
@@ -629,6 +648,7 @@ class ConfigurationClassParser {
 								BeanUtils.instantiateClass(candidateClass, ImportBeanDefinitionRegistrar.class);
 						ParserStrategyUtils.invokeAwareMethods(
 								registrar, this.environment, this.resourceLoader, this.registry);
+						//添加到ConfigurationClass 中引入注册集合中
 						configClass.addImportBeanDefinitionRegistrar(registrar, currentSourceClass.getMetadata());
 					}
 					else {
@@ -905,7 +925,9 @@ class ConfigurationClassParser {
 			}
 			return new ConfigurationClass((MetadataReader) this.source, importedBy);
 		}
-
+		/**
+		 * 获取类的内部成员类
+		 */
 		public Collection<SourceClass> getMemberClasses() throws IOException {
 			Object sourceToProcess = this.source;
 			if (sourceToProcess instanceof Class) {

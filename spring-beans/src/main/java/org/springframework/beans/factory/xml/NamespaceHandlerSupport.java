@@ -72,7 +72,9 @@ public abstract class NamespaceHandlerSupport implements NamespaceHandler {
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
-	    // 获得元素对应的 BeanDefinitionParser 对象
+	    // 获得元素对应的 BeanDefinitionParser 对象 AopNamespaceHandler 定义了不同的解析方法
+		// 根据标签来获取不同的解析器 config 由ConfigBeanDefinitionParser 进行解析
+
 		BeanDefinitionParser parser = findParserForElement(element, parserContext);
 		// 执行解析
 		return (parser != null ? parser.parse(element, parserContext) : null);

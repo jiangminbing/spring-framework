@@ -57,6 +57,8 @@ import org.springframework.util.StringValueResolver;
  * @see org.springframework.context.MessageSourceAware
  * @see org.springframework.context.ApplicationContextAware
  * @see org.springframework.context.support.AbstractApplicationContext#refresh()
+ * 这个类在容器准备阶段(prepareBeanFactory)已经初始化 放到addBeanPostProcessor中
+ *
  */
 class ApplicationContextAwareProcessor implements BeanPostProcessor {
 
@@ -99,6 +101,10 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 		return bean;
 	}
 
+	/**
+	 * 在容器初始化之前，将容器上下文内容传递给对应的接口
+	 * @param bean
+	 */
 	private void invokeAwareInterfaces(Object bean) {
 		if (bean instanceof Aware) {
 			if (bean instanceof EnvironmentAware) {

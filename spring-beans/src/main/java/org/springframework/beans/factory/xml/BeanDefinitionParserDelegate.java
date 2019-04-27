@@ -1365,6 +1365,14 @@ public class BeanDefinitionParserDelegate {
 		return parseCustomElement(ele, null);
 	}
 
+	/**
+	 * 处理自定义表签 通过表签来获取不同的解析器进行解析
+	 * Aop 是AopNamespaceHandler
+	 * Tx 事务TxNamespaceHandler
+	 * @param ele
+	 * @param containingBd
+	 * @return
+	 */
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele, @Nullable BeanDefinition containingBd) {
 	    // 获取 namespaceUri
