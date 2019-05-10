@@ -142,6 +142,9 @@ public class ContextLoader {
 		// This is currently strictly internal and not meant to be customized
 		// by application developers.
 		try {
+			//将ContextLoader.properties 中的属性缓存起来
+			//成key-value 的方式
+			// org.springframework.web.context.WebApplicationContext=org.springframework.web.context.support.XmlWebApplicationContext
 			ClassPathResource resource = new ClassPathResource(DEFAULT_STRATEGIES_PATH, ContextLoader.class);
 			defaultStrategies = PropertiesLoaderUtils.loadProperties(resource);
 		} catch (IOException ex) {
@@ -339,6 +342,7 @@ public class ContextLoader {
 	 */
 	protected WebApplicationContext createWebApplicationContext(ServletContext sc) {
 	    // 获得 context 的类
+		// contextClass 有两种情况 1,AnnotationConfigWebApplicationContext 2.XmlWebApplicationContext
 		Class<?> contextClass = determineContextClass(sc);
 		// 判断 context 的类，是否符合 ConfigurableWebApplicationContext 的类型
 		if (!ConfigurableWebApplicationContext.class.isAssignableFrom(contextClass)) {
@@ -359,8 +363,12 @@ public class ContextLoader {
 	 */
 	protected Class<?> determineContextClass(ServletContext servletContext) {
 	    // 获得参数 contextClass 的值
+		//web.xml 配置成注解的方式启动
+		//        <!--<param-name>contextClass</param-name>-->
+		//        <!--<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>-->
 		String contextClassName = servletContext.getInitParameter(CONTEXT_CLASS_PARAM);
 		// 情况一，如果值非空，则获得该类
+		// 情况一，也就是通过注解的方式来配置spring容器,使用配置类是AnnotationConfigWebApplicationContext
 		if (contextClassName != null) {
 			try {
 				return ClassUtils.forName(contextClassName, ClassUtils.getDefaultClassLoader());
@@ -369,6 +377,7 @@ public class ContextLoader {
 						"Failed to load custom context class [" + contextClassName + "]", ex);
 			}
         // 情况二，从 defaultStrategies 获得该类
+			// 情况二，是通过XML的方式来配置spring容器，通过ContextLoader.properties来获取xmlWebApplicationContext，进行容器的初始化
 		} else {
 			contextClassName = defaultStrategies.getProperty(WebApplicationContext.class.getName());
 			try {
@@ -418,7 +427,7 @@ public class ContextLoader {
 		// TODO 芋艿，暂时忽略 执行自定义初始化 context
 		customizeContext(sc, wac);
 
-		// 刷新 context ，执行初始化
+		// 刷新 context ，执行初始化 最终在AbstractApplicationContext中执行刷新
 		wac.refresh();
 	}
 

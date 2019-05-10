@@ -78,6 +78,12 @@ import org.springframework.web.util.NestedServletException;
  * @see #initFilterBean
  * @see #doFilter
  */
+
+/**
+ * 这个类比较特殊
+ * 1.实现了Filter 可以在web.xml中配置做为普通的过滤器用
+ * 2.通过过滤器代理的方式进行创建
+ */
 public abstract class GenericFilterBean implements Filter, BeanNameAware, EnvironmentAware,
 		EnvironmentCapable, ServletContextAware, InitializingBean, DisposableBean {
 
@@ -216,6 +222,7 @@ public abstract class GenericFilterBean implements Filter, BeanNameAware, Enviro
 		PropertyValues pvs = new FilterConfigPropertyValues(filterConfig, this.requiredProperties);
 		if (!pvs.isEmpty()) {
 			try {
+				//bean 在实例化前 可以BeanWrapper 进行属性设置
 				BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);
 				ResourceLoader resourceLoader = new ServletContextResourceLoader(filterConfig.getServletContext());
 				Environment env = this.environment;

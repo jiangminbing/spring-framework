@@ -542,7 +542,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		long startTime = System.currentTimeMillis();
 
 		try {
-		    // 初始化 WebApplicationContext 对象
+		    // 初始化 WebApplicationContext 对象 初始化spring容器 将容器作为servlet的属性
 			this.webApplicationContext = initWebApplicationContext();
 			// 空实现。子类有需要，可以实现该方法，实现自定义逻辑
 			initFrameworkServlet();
@@ -678,7 +678,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 */
 	protected WebApplicationContext createWebApplicationContext(@Nullable ApplicationContext parent) {
 	    // 获得 context 的类
-		Class<?> contextClass = getContextClass();
+		Class<?> contextClass = getContextClass();//默认 XmlWebApplicationContext.class
 		// 如果非 ConfigurableWebApplicationContext 类型，抛出 ApplicationContextException 异常
 		if (!ConfigurableWebApplicationContext.class.isAssignableFrom(contextClass)) {
 			throw new ApplicationContextException(
