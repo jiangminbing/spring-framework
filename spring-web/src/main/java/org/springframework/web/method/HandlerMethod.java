@@ -79,7 +79,7 @@ public class HandlerMethod {
 
     /**
      * {@link #method} 的桥接方法
-     *
+     * 实际上是针对泛型类型的方法调用
      * 详细说明
      *
      * 1. https://www.jianshu.com/p/250030ea9b28

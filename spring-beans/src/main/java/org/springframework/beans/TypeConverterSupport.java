@@ -25,6 +25,8 @@ import org.springframework.util.Assert;
 import java.lang.reflect.Field;
 
 /**
+ *
+ *  到这里重新了熟悉下编辑属性的内容 下周一
  * Base implementation of the {@link TypeConverter} interface, using a package-private delegate.
  * Mainly serves as base class for {@link BeanWrapperImpl}.
  *
@@ -66,6 +68,7 @@ public abstract class TypeConverterSupport extends PropertyEditorRegistrySupport
 			if (field != null) { // field
 				return this.typeConverterDelegate.convertIfNecessary(value, requiredType, field);
 			} else { // methodParam
+				// 委派给代理进行处理
 				return this.typeConverterDelegate.convertIfNecessary(value, requiredType, methodParam);
 			}
 		} catch (ConverterNotFoundException | IllegalStateException ex) {

@@ -161,9 +161,11 @@ public class InvocableHandlerMethod extends HandlerMethod {
 				continue;
 			}
 			// 判断 argumentResolvers 是否支持当前的参数解析
+			// MethodParameter 循环参数取出参数的所有注解判断是否符合当前要求的类
 			if (this.argumentResolvers.supportsParameter(parameter)) {
 				try {
 				    // 执行解析。解析成功后，则进入下一个参数的解析
+					// 执行进行参数解析 然后进行赋值
 					args[i] = this.argumentResolvers.resolveArgument(
 							parameter, mavContainer, request, this.dataBinderFactory);
 					continue;
@@ -218,7 +220,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	    // 设置方法为可访问
 		ReflectionUtils.makeAccessible(getBridgedMethod());
 		try {
-		    // 执行调用
+		    // 执行方法中的具体调用
 			return getBridgedMethod().invoke(getBean(), args);
 		} catch (IllegalArgumentException ex) {
 			assertTargetBean(getBridgedMethod(), getBean(), args);

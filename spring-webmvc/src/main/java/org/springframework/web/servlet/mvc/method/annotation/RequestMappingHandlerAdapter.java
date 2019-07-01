@@ -825,6 +825,9 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	 * @since 4.2
 	 * @see #createInvocableHandlerMethod(HandlerMethod)
 	 */
+	/**
+	 * DispatcherServlet 中 请求分发 执行handle 方法 最终调用invokeHandlerMethod 这个方法
+	 */
 	@Nullable
 	protected ModelAndView invokeHandlerMethod(HttpServletRequest request,
 			HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
@@ -940,8 +943,10 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 	private WebDataBinderFactory getDataBinderFactory(HandlerMethod handlerMethod) throws Exception {
 		Class<?> handlerType = handlerMethod.getBeanType();
+		// 对应的类和Method的缓存
 		Set<Method> methods = this.initBinderCache.get(handlerType);
 		if (methods == null) {
+			//获取相应类对应@InitBinder 注解的方法
 			methods = MethodIntrospector.selectMethods(handlerType, INIT_BINDER_METHODS);
 			this.initBinderCache.put(handlerType, methods);
 		}
@@ -955,6 +960,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 				}
 			}
 		});
+		//类中自定义@InitBinder
 		for (Method method : methods) {
 			Object bean = handlerMethod.getBean();
 			initBinderMethods.add(createInitBinderMethod(bean, method));
@@ -982,6 +988,8 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	 */
 	protected InitBinderDataBinderFactory createDataBinderFactory(List<InvocableHandlerMethod> binderMethods)
 			throws Exception {
+		//具体可以查看WebMvcConfigurationSupport  配置RequestMappingHandlerAdapter 中的属性设置
+		//WebBindingInitializer 设置的初始化器是 ConfigurableWebBindingInitializer
 		return new ServletRequestDataBinderFactory(binderMethods, getWebBindingInitializer());
 	}
 

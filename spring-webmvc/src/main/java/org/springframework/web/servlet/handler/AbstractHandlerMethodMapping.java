@@ -54,7 +54,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMapping implements InitializingBean {
 
 	/**
-	 * Bean name prefix for target beans behind scoped proxies. Used to exclude those
+	 * Bean name prefix for target beans behind scoped proxiAbstractHandlerMethodMappinges. Used to exclude those
 	 * targets from handler method detection, in favor of the corresponding proxies.
 	 * <p>We're not checking the autowire-candidate status here, which is how the
 	 * proxy target filtering problem is being handled at the autowiring level,
@@ -203,10 +203,11 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 * @see #handlerMethodsInitialized
 	 */
 	protected void initHandlerMethods() {
+		// getCandidateBeanNames 获取注册在容器中的所有对象
 	    // 遍历 Bean ，逐个处理
 		for (String beanName : getCandidateBeanNames()) {
 			if (!beanName.startsWith(SCOPED_TARGET_NAME_PREFIX)) {
-			    // 处理 Bean
+			    // 处理 候选Bean
 				processCandidateBean(beanName);
 			}
 		}
@@ -248,7 +249,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 				logger.trace("Could not resolve type for bean '" + beanName + "'", ex);
 			}
 		}
-        // 判断 Bean 是否为处理器，如果是，则扫描处理器方法
+        // 判断 Bean 是否为处理器，如果是，则扫描处理器方法, 将注解为Cotroller 和 RequestMapping的对象加入
 		if (beanType != null && isHandler(beanType)) {
 			detectHandlerMethods(beanName);
 		}
@@ -260,7 +261,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 * @see #getMappingForMethod
 	 */
 	protected void detectHandlerMethods(Object handler) {
-	    // 获得处理器类型
+	    // 获得处理器类型 注册在容器中的Controller 对象
 		Class<?> handlerType = (handler instanceof String ?
 				obtainApplicationContext().getType((String) handler) : handler.getClass());
 
@@ -271,6 +272,8 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			Map<Method, T> methods = MethodIntrospector.selectMethods(userType,
 					(MethodIntrospector.MetadataLookup<T>) method -> {
 						try {
+							// 由子类RequesetMappingHandlerMapping 实现这个方法 返回RequestMappingInfo
+							// 在这个方法里面将RequestMapping 注解的内容进行获取组装生RequestMappingInfo 队形
 							return getMappingForMethod(method, userType);
 						}
 						catch (Throwable ex) {
@@ -284,6 +287,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			// 遍历方法，逐个注册 HandlerMethod
 			methods.forEach((method, mapping) -> {
 				Method invocableMethod = AopUtils.selectInvocableMethod(method, userType);
+				//将controller的beanName,代理的方法和RequestMappingInfo 注册
 				registerHandlerMethod(handler, invocableMethod, mapping);
 			});
 		}
@@ -379,6 +383,9 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	    // Match 数组，存储匹配上当前请求的结果
 		List<Match> matches = new ArrayList<>();
 		// 优先，基于直接 URL 的 Mapping 们，进行匹配
+		// 分两个步骤：
+		// 1.直接通过url匹配出处理器对应的RequestMappingInfo
+		// 2.通过请求方法，请求头，请求参数模糊匹配出比较相似的两个RequestMappingInfo 然后在后续的方法中进行排序
 		List<T> directPathMatches = this.mappingRegistry.getMappingsByUrl(lookupPath);
 		if (directPathMatches != null) {
 			addMatchingMappings(directPathMatches, matches, request);

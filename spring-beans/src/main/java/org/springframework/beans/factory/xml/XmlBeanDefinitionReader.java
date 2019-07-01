@@ -545,6 +545,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * Create the {@link XmlReaderContext} to pass over to the document reader.
 	 */
 	public XmlReaderContext createReaderContext(Resource resource) {
+		// getNamespaceHandlerResolver 根据根据当前容器类所在的类的路径下读取 spring.handlers对应的处理器进行xml解析工作
 		return new XmlReaderContext(resource, this.problemReporter, this.eventListener,
 				this.sourceExtractor, this, getNamespaceHandlerResolver());
 	}

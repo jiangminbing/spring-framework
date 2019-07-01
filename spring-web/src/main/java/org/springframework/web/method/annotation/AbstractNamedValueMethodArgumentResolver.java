@@ -126,8 +126,10 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 
 		// 执行值的类型转换
 		if (binderFactory != null) {
+			// DefaultDataBinderFactory 中createBinder方法 获取数据绑定方法
 			WebDataBinder binder = binderFactory.createBinder(webRequest, null, namedValueInfo.name);
 			try {
+				// DataBinder 中执行convertIfNecessary 最终由DataBinder 中SimpleTypeConverter 执行数据类型装换
 				arg = binder.convertIfNecessary(arg, parameter.getParameterType(), parameter);
 			} catch (ConversionNotSupportedException ex) {
 				throw new MethodArgumentConversionNotSupportedException(arg, ex.getRequiredType(),

@@ -311,6 +311,7 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 				if (!failedParams.contains(paramName)) {
 					Object value = args[i];
 					result.recordFieldValue(paramName, paramTypes[i], value);
+					//执行验证方法
 					validateValueIfApplicable(binder, parameter, ctor.getDeclaringClass(), paramName, value);
 				}
 			}

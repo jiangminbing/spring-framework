@@ -230,6 +230,9 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 	 * the current request, sorted with best matching patterns on top.
 	 * @return a new instance in case all conditions match; or {@code null} otherwise
 	 */
+	/**
+	 *  按照请求头，请求路径，参数等一定的顺序进行匹配
+	 */
 	@SuppressWarnings("Duplicates")
     @Override
 	@Nullable

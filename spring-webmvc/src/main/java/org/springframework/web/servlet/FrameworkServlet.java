@@ -1042,11 +1042,14 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		Throwable failureCause = null;
 
 		// TODO 芋艿
+		//获取当前线程绑定的LocaleContext
 		LocaleContext previousLocaleContext = LocaleContextHolder.getLocaleContext();
+		//根据请求构建新的LocaleContext 适用于本地语音的配置信息
 		LocaleContext localeContext = buildLocaleContext(request);
 
 		// TODO 芋艿
 		RequestAttributes previousAttributes = RequestContextHolder.getRequestAttributes();
+		//构建servlet 请求参数
 		ServletRequestAttributes requestAttributes = buildRequestAttributes(request, response, previousAttributes);
 
 		// TODO 芋艿
@@ -1067,6 +1070,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			throw new NestedServletException("Request processing failed", ex);
 		} finally {
 		    // TODO 芋艿
+			// 重置当前线程请求 和 localecontext
 			resetContextHolders(request, previousLocaleContext, previousAttributes);
 			if (requestAttributes != null) {
 				requestAttributes.requestCompleted();

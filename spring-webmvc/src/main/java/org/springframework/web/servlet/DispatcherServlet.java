@@ -495,15 +495,15 @@ public class DispatcherServlet extends FrameworkServlet {
 		initLocaleResolver(context);
 		// 初始化 ThemeResolver
 		initThemeResolver(context);
-		// 初始化 HandlerMapping 们
+		// 初始化 HandlerMapping 们 请求地址映射
 		initHandlerMappings(context);
 		// 初始化 HandlerAdapter 们
 		initHandlerAdapters(context);
-		// 初始化 HandlerExceptionResolver 们
+		// 初始化 HandlerExceptionResolver 们 异常处理
 		initHandlerExceptionResolvers(context);
 		// 初始化 RequestToViewNameTranslator
 		initRequestToViewNameTranslator(context);
-		// 初始化 ViewResolver 们
+		// 初始化 ViewResolver 们 视图映射
 		initViewResolvers(context);
 		// 初始化 FlashMapManager
 		initFlashMapManager(context);
@@ -618,6 +618,8 @@ public class DispatcherServlet extends FrameworkServlet {
 		// a default HandlerMapping if no other mappings are found.
         // 如果未获得到，则获得默认配置的 HandlerMapping 类
 		if (this.handlerMappings == null) {
+			//获取默认的处理器 BeanNameUrlHandlerMapping，RequestMappingHandlerMapping 并加载在容器中
+			//利用spring容器创建这两个类，产生了bean的生命周期
 			this.handlerMappings = getDefaultStrategies(context, HandlerMapping.class);
 			if (logger.isTraceEnabled()) {
 				logger.trace("No HandlerMappings declared for servlet '" + getServletName() +
@@ -744,6 +746,7 @@ public class DispatcherServlet extends FrameworkServlet {
         // 情况一，自动扫描 ViewResolver 类型的 Bean 们
 		if (this.detectAllViewResolvers) {
 			// Find all ViewResolvers in the ApplicationContext, including ancestor contexts.
+			// 扫描容器中包含实现ViewResolver的类 作为视图解析器
 			Map<String, ViewResolver> matchingBeans =
 					BeanFactoryUtils.beansOfTypeIncludingAncestors(context, ViewResolver.class, true, false);
 			if (!matchingBeans.isEmpty()) {
@@ -1036,6 +1039,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 				// Determine handler for the current request.
                 // 获得请求对应的 HandlerExecutionChain 对象
+				// 默认是两个BeanNameUrlHandlerMapping 和 RequestMappingHandlerMapping 这两个请求映射处理器
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) { // 如果获取不到，则根据配置抛出异常或返回 404 错误。
 					noHandlerFound(processedRequest, response);
@@ -1064,6 +1068,10 @@ public class DispatcherServlet extends FrameworkServlet {
 
 				// Actually invoke the handler.
                 // 真正的调用 handler 方法，并返回视图
+				// AbstractHandlerMethodAdapter.handle 调用子类的RequestMappingHandlerAdapter.handleInternal()
+				// HttpRequestHandlerAadpter
+				// SimpleServletHandlerAdapter
+				// SimpleControllerHandler 这些前置处理方法
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
 				// TODO 芋艿
@@ -1083,7 +1091,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				dispatchException = new NestedServletException("Handler dispatch failed", err); // 记录异常
 			}
 
-			// 处理正常和异常的请求调用结果。
+			// 处理正常和异常的请求调用结果,正常调用视图渲染和填充
 			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
 		} catch (Exception ex) {
 		    // 已完成 拦截器
@@ -1315,6 +1323,11 @@ public class DispatcherServlet extends FrameworkServlet {
 		    // 遍历 HandlerAdapter 数组
 			for (HandlerAdapter adapter : this.handlerAdapters) {
 			    // 判断是否支持当前处理器
+				// 默认RequesetMappingHandlerAdapter 父类AbstractHandlerMethodAdapter.supports()实现接口方法
+				// 调用子类RequesetMappingHandlerAdapter.supportsInternal() 对所有的HandlerMethod 都支持前置处理
+				// HttpRequestHandlerAadpter 支持HttpRequesetHandler 的前置处理
+				// SimpleServletHandlerAdapter
+				// SimpleControllerHandler 这些前置处理方法
 				if (adapter.supports(handler)) {
 				    // 如果支持，则返回
 					return adapter;

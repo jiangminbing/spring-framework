@@ -152,16 +152,19 @@ class TypeConverterDelegate {
 			@Nullable Class<T> requiredType, @Nullable TypeDescriptor typeDescriptor) throws IllegalArgumentException {
 
 		// Custom editor for this type?
+		// 根据class 查找是否有自定义属性编辑器
 		PropertyEditor editor = this.propertyEditorRegistry.findCustomEditor(requiredType, propertyName);
 
 		ConversionFailedException conversionAttemptEx = null;
 
 		// No custom editor but custom ConversionService specified?
+		// 自定义装换服务 比如ArrayToArrayConverter 这种类型的装换器
 		ConversionService conversionService = this.propertyEditorRegistry.getConversionService();
 		if (editor == null && conversionService != null && newValue != null && typeDescriptor != null) {
 			TypeDescriptor sourceTypeDesc = TypeDescriptor.forObject(newValue);
 			if (conversionService.canConvert(sourceTypeDesc, typeDescriptor)) {
 				try {
+					// 执行用户自定义装换
 					return (T) conversionService.convert(newValue, sourceTypeDesc, typeDescriptor);
 				} catch (ConversionFailedException ex) {
 					// fallback to default conversion logic below
@@ -187,6 +190,7 @@ class TypeConverterDelegate {
 			if (editor == null) {
 				editor = findDefaultEditor(requiredType);
 			}
+			// 执行默认转换服务 一些基本数据类型的转换 比如ByteArrayPropertyEditor  这种类型装换
 			convertedValue = doConvertValue(oldValue, convertedValue, requiredType, editor);
 		}
 

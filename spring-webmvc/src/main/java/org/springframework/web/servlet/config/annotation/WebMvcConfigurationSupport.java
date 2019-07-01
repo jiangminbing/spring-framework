@@ -876,7 +876,7 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 		if (exceptionResolvers.isEmpty()) {
 			addDefaultHandlerExceptionResolvers(exceptionResolvers);
 		}
-		// 子类定义的 HandlerExceptionResolver 数组，到 exceptionResolvers 中
+		// 子类定义的 HandlerExceptionResolver 数configureHandlerExceptionResolvers组，到 exceptionResolvers 中
 		extendHandlerExceptionResolvers(exceptionResolvers);
 
 		// 创建 HandlerExceptionResolverComposite 数组

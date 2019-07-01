@@ -44,7 +44,7 @@ public class DelegatingWebMvcConfiguration extends WebMvcConfigurationSupport {
 
 	private final WebMvcConfigurerComposite configurers = new WebMvcConfigurerComposite();
 
-
+    //通过set方式进行依赖注入 实现接口WebMvcConfigurer进行注入
 	@Autowired(required = false)
 	public void setConfigurers(List<WebMvcConfigurer> configurers) {
 		if (!CollectionUtils.isEmpty(configurers)) {

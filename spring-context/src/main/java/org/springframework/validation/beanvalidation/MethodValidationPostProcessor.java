@@ -109,6 +109,7 @@ public class MethodValidationPostProcessor extends AbstractBeanFactoryAwareAdvis
 
 	@Override
 	public void afterPropertiesSet() {
+		//通过标注的注解获取切面
 		Pointcut pointcut = new AnnotationMatchingPointcut(this.validatedAnnotationType, true);
 		this.advisor = new DefaultPointcutAdvisor(pointcut, createMethodValidationAdvice(this.validator));
 	}
@@ -122,6 +123,7 @@ public class MethodValidationPostProcessor extends AbstractBeanFactoryAwareAdvis
 	 * @since 4.2
 	 */
 	protected Advice createMethodValidationAdvice(@Nullable Validator validator) {
+		//创建对应的增强方法
 		return (validator != null ? new MethodValidationInterceptor(validator) : new MethodValidationInterceptor());
 	}
 

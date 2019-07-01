@@ -82,7 +82,12 @@ public class MethodValidationInterceptor implements MethodInterceptor {
 		this.validator = validator;
 	}
 
-
+	/**
+	 * 执行增强方法 对切点进行方法增强
+	 * @param invocation the method invocation joinpoint
+	 * @return
+	 * @throws Throwable
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public Object invoke(MethodInvocation invocation) throws Throwable {

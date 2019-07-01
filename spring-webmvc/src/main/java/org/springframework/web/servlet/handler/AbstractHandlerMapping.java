@@ -309,6 +309,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	}
 
 	/**
+	 *  在webAppliaction 容器初始化后执行这个方法
 	 * Initializes the interceptors.
 	 * @see #extendInterceptors(java.util.List)
 	 * @see #initInterceptors()
@@ -439,7 +440,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	@Override
 	@Nullable
 	public final HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
-	    // 获得处理器。该方法是抽象方法，由子类实现
+	    // 获得处理器。该方法是抽象方法，由子类实现 获取的是HandlerMethod
 		Object handler = getHandlerInternal(request);
 		// 获得不到，则使用默认处理器
 		if (handler == null) {
@@ -451,6 +452,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 		}
 		// Bean name or resolved handler?
         // 如果找到的处理器是 String 类型，则从容器中找到 String 对应的 Bean 类型作为处理器。
+		// 匹配到对应的controller
 		if (handler instanceof String) {
 			String handlerName = (String) handler;
 			handler = obtainApplicationContext().getBean(handlerName);
