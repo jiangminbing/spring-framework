@@ -69,6 +69,7 @@ public class GenericApplicationListenerAdapter implements GenericApplicationList
 	public boolean supportsEventType(ResolvableType eventType) {
 		if (this.delegate instanceof SmartApplicationListener) {
 			Class<? extends ApplicationEvent> eventClass = (Class<? extends ApplicationEvent>) eventType.resolve();
+			// 循环的判断到当前监听是普通的监听应用
 			return (eventClass != null && ((SmartApplicationListener) this.delegate).supportsEventType(eventClass));
 		}
 		else {

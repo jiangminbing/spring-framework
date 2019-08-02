@@ -171,6 +171,7 @@ public class EventListenerMethodProcessor
 					for (EventListenerFactory factory : factories) {
 						if (factory.supportsMethod(method)) {
 							Method methodToUse = AopUtils.selectInvocableMethod(method, context.getType(beanName));
+							// 查找出对应@EvnetList的方法 封装成相应的前置方法，并添加到容器中的监听器集合中
 							ApplicationListener<?> applicationListener =
 									factory.createApplicationListener(beanName, targetType, methodToUse);
 							if (applicationListener instanceof ApplicationListenerMethodAdapter) {

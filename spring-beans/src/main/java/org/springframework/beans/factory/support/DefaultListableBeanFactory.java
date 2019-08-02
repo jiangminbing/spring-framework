@@ -818,6 +818,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		// Trigger post-initialization callback for all applicable beans...
         // 遍历所有单例 Bean ，触发后置初始化方法，即 SmartInitializingSingleton 对象，所有非 lazy 单例 Bean 实例化完成后的回调方法。
+		// 这个方法在所有非懒加载单例模式对象创建后执行
         // Spring 4.1 新增的特性
 		for (String beanName : beanNames) {
 			Object singletonInstance = getSingleton(beanName);

@@ -184,7 +184,7 @@ public class PropertyPlaceholderHelper {
 
         // 返回propVal，就是替换之后的值
 		return result.toString();
-	}
+}
 
 	private int findPlaceholderEndIndex(CharSequence buf, int startIndex) {
 		int index = startIndex + this.placeholderPrefix.length();

@@ -1219,7 +1219,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected RootBeanDefinition getMergedBeanDefinition(
 			String beanName, BeanDefinition bd, @Nullable BeanDefinition containingBd)
 			throws BeanDefinitionStoreException {
-
+        // 合并父类中的属性参数，递归找出对应的属性参数进行拷贝
 		synchronized (this.mergedBeanDefinitions) {
 			RootBeanDefinition mbd = null;
 
@@ -1596,6 +1596,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @param mbd the merged bean definition
 	 * @return the object to expose for the bean
 	 */
+	// 这个方法的主要作用在获取已经创建好的单例对象，如果对象是FactoryBean 方式创建的那么通过
+	// FactoryBean 中的方法获取getObject
 	protected Object getObjectForBeanInstance(
 			Object beanInstance, String name, String beanName, @Nullable RootBeanDefinition mbd) {
         // 若为工厂类引用（name 以 & 开头）
@@ -1635,6 +1637,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			if (mbd == null && containsBeanDefinition(beanName)) {
                 // 将存储 XML 配置文件的 GenericBeanDefinition 转换为 RootBeanDefinition，
                 // 如果指定 BeanName 是子 Bean 的话同时会合并父类的相关属性
+				// 这个方法在xml中的体现是<bean id="abc" parent="ab"> ,在注解的bean声明中没有体现
 				mbd = getMergedLocalBeanDefinition(beanName);
 			}
             // 是否是用户定义的，而不是应用程序本身定义的

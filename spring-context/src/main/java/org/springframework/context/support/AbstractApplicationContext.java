@@ -364,6 +364,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		if (this.earlyApplicationEvents != null) {
 			this.earlyApplicationEvents.add(applicationEvent);
 		} else {
+			// 广播事件
 			getApplicationEventMulticaster().multicastEvent(applicationEvent, eventType);
 		}
 
@@ -899,6 +900,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * Finish the refresh of this context, invoking the LifecycleProcessor's
 	 * onRefresh() method and publishing the
 	 * {@link org.springframework.context.event.ContextRefreshedEvent}.
+	 *  spring 上下文准备就绪，所有bean初始化完成并且能够投入使用
 	 */
 	protected void finishRefresh() {
 		// Clear context-level resource caches (such as ASM metadata from scanning).
@@ -960,14 +962,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void registerShutdownHook() {
 		if (this.shutdownHook == null) {
 			// No shutdown hook registered yet.
-			this.shutdownHook = new Thread() {
-				@Override
-				public void run() {
-					synchronized (startupShutdownMonitor) {
-						doClose();
-					}
+			this.shutdownHook = new Thread(() -> {
+				synchronized (startupShutdownMonitor) {
+					doClose();
 				}
-			};
+			});
 			Runtime.getRuntime().addShutdownHook(this.shutdownHook);
 		}
 	}

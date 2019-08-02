@@ -19,6 +19,7 @@ package org.springframework.context.event;
 import org.springframework.context.ApplicationContext;
 
 /**
+ * 容器上下文准备就绪,bean 初始化完成，能够投入使用
  * Event raised when an {@code ApplicationContext} gets initialized or refreshed.
  *
  * @author Juergen Hoeller

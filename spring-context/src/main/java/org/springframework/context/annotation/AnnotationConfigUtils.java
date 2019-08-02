@@ -39,6 +39,13 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
 /**
+ * @Configuration 注解的解析方法                            ConfigurationClassPostProcessor(Component|PropertySources|ImportResource|Bean|ComponentScans|Import)
+ * @Autowired(@Qualifier),@Value,@Inject  注解的解析方法  AutowiredAnnotationBeanPostProcessor
+ * @Required                                                RequiredAnnotationBeanPostProcessor
+ * @Postconstruct,PreDestroy,@Resource 注解的解析方法    CommonAnnotationBeanPostProcessor
+ * @Persistence                                            PersistenceAnnotationBeanPostProcessor
+
+ *
  * Utility class that allows for convenient registration of common
  * {@link org.springframework.beans.factory.config.BeanPostProcessor} and
  * {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor}

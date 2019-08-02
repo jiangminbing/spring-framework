@@ -40,6 +40,8 @@ package org.springframework.beans.factory;
  * @author Juergen Hoeller
  * @since 4.1
  * @see org.springframework.beans.factory.config.ConfigurableListableBeanFactory#preInstantiateSingletons()
+ * afterSingletonsInstantiated 是在ConfigurableListableBeanFactory#preInstantiateSingletons()后进行调用
+ * 也就是在Spring容器中所有的单例模式,非lazy加载的实例初始化后执行afterSingletonsInstantiated
  */
 public interface SmartInitializingSingleton {
 
